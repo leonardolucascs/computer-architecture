@@ -1,0 +1,160 @@
+#####
+L7
+#####
+
+Dopo aver visto come si rappresenta l'informazione numerica attraverso un sistema di numerazione binario, vediamo come si progetta un circuito in grado di rappresentare ed elaborare tale informazione.
+
+Un circuito digitale è composto da tanti elementi, ognuno dei quale in grado di compiere una elaborazione logica elementare.
+
+Connettendo tra loro più elementi otteniamo reti o circuiti in grado di svolgere elaborazioni più complesse.
+
+Per elaborazione logica si intendono le operazioni matematiche definite dall' algebra di Boole.
+
+
+Cos'è un algebra?
+Un insieme di simboli, valori e regole per svolgere operazioni su di essi.
+
+L'algebra di Boole comprende simboli e valori binari su cui possiamo svolgere operazioni logiche
+	Le variabili le denotiamo con lettere minuscole: a, x1, x2, u, ...
+	I valori ammessi sono TRUE(1) o FALSE(0)
+	Variabili e valori possono essere usati come operandi di tre operatori logici elementari:
+		NOT, AND, OR
+
+	NOT: utilizzata per negare
+	AND: x congiungiure, legare, (una) e (l'altra)
+	OR: x disgiungere, (una) o (l'altra)
+
+	Gli operatori hanno questi nomi perchè svolgono sui valori logici 1-0 o sulle variabili, che contengono questi valori, operazioni analoghe a quelle appena descritte in termini formali, di negazione - congiuzione - disgiunzione.
+
+	Combinando valori e simboli binari con gli operatori si ottengono espressioni Booleane che rappresentano funzioni logiche.
+
+	Funzione: è una legge che associa ad un valore del dominio ad uno e un solo valore del codominio.
+
+	Funzione logica: è la stessa cosa definita nel mondo binario,logico.
+		Insieme dei valori binari B = {0,1} , B : binary
+		variabile binaria a ∈ B (B è il dominio di ogni variabile in input)
+		Definizione di f.logica su n variabili binaria f:B^n -> B(si può anche indicare come f(a1, a2, ...., an) ∈ B).
+		Si legge come: Ad ogni (n valori di B)ennupla di valori binari si associa un valore binario.
+
+
+OPERATORE: NOT
+- esprime la negazione logica di un espressione booleana
+- si indica con a barrato sopra, dove a può essere una variabile o un espressione booleana con più variabili
+- notazioni alternative: "NOT(a)", "¬a"
+- Interpretazione: se a = 1, la sua negazione ha valore 0
+
+OPERATORE: AND
+- esprime la congiunzione logica tra due espressioni a e b
+- si indica con "ab", alternative "a and b", "a ∧ b"
+- ab assume valore a 1(true) se e solo se entrambi a e b sono a 1
+- definito come prodotto logico, può esser visto come un prodotto(guarda la true table)
+- ma conviene pensarlo come il min(minimo) tra due valori (guarda la true table)
+
+OPERATORE: OR
+- esprime la disgiunzione logica tra due espressioni a e b
+- si indica con "a+b", alternative "a or b", "a ∨ b"
+- a+b assume valore 1, se almeno a o b ha valore 1, 0 altrimenti
+- detto come somma logica
+- conviene pensarlo come il max tra due input(guarda true table)
+
+
+PRECEDENZA OPERATORI
+- NOT ha precedenza su AND e OR
+- AND ha precedenza su OR
+
+es. f(a,b,c) = a + b_negato c
+
+come si valuta questa espressione, assumiamo che a=0, b=c=1
+	f(a,b,c) = 0 + 11	stato iniziale
+	f(a,b,c) = 0 + 01 	svolto: (not b)
+			 = 0 + 0  			((not b) and c)
+			 = 0 	  			(a or (notb and c))
+
+PRINCIPIO DUALITà
+Data un'espressione di uguaglianza booleana, la sua duale si ottiene scambiando:
+- gli AND con OR e viceversa
+- gli 1 con 0 e viceversa
+
+- Principio di dualità: se un'uguaglianza booleana è valida allora lo è anche la sua duale
+
+Trasformare un espressione nella sua duale preserva il valore di verità di quell'espressione.
+
+Es.
+	a + a_negato = 1, la sua duale: aa_negato = 0
+
+
+Propietà degli operatori logici
+- FOTO TABELLA
+
+Notare che le proprietà presenti sulla terza colonna(proprietà di OR) rappresentano le duali delle proprietà di AND
+
+
+Chi ha stabilito queste proprietà?
+Il meccanismo di definizione parte dai 3 operatori logici, il principio di dualità e le proprietà in violetto:
+- identità
+- inverso
+- commutativa
+- distributiva
+definite come postulati, non vanno provati e li assumiamo come veri, rappresentano degli assiomi dell'algebra.
+Tutto il resto si può ricavare a partire dai postulati e applicando le regole dell'algebra, questo processo di trovare un'altra proprietà prende il nome di dimostrazione.
+
+FOTO SLIDE  DIMOSTRAZIONI PROPRIETà 
+
+
+
+PORTE LOGICHE
+Gli operatori logici visti che svolgono operazioni logiche nell'algebra di Boole, possiedono delle controparti hardware, componente hardware che svolge la stessa funzione.
+
+Un circuito digitale elementare che svolge con i segnali di tensione la stessa funzione che l'operatore logico svolge.
+
+I segnali a sinistra sono denominati ingressi, a destra uscita.
+
+
+
+
+CIRCUITI COMBINATORI
+Nello stesso modo in cui si possono combinare operatori logici per creare funzioni/espressioni logiche più o meno complesse, è possibile far analogamente attraverso l'utilizzo combinato di porte logiche, collegando uscite con ingressi
+
+FOTO CIRCUITO COMBINATORI
+
+Ciò che si nota in blu all'interno del circuito sono i segnali intermedi, ovvero valori di tensione dentro il circuito che rappresentano sottoespressioni dell'espressione originale.
+
+Per calcolare l'espressione originale un circuito si deve calcolare le sue sottoespressioni.
+
+proprietà circ. comb.:
+- Il circuito appena visto rappresenta un circuito combinatorio, hanno una certa struttura, una certa proprietà strutturale, si leggono e vanno da sinistra verso destra non tornano mai indietro, ovvero combinano gli input (che rappresentano le variabili a,b,c) per ottenere un output (che rappresenta la funzione logica f(a,b,c)).
+[L'elaborazione procede in un senso solo]
+
+- Altra caratteristica di questo tipo di circuito è che a fronte degli stessi input vengono prodotti gli stessi output.
+Cosa significa questo?
+Il circuito non ha memoria, ovvero gli input che si presentano nel suo pattern è come fosse sempre la prima volta, la risposta che il circuito da dipende soltanto dagli input.
+
+FOTO ultima slide
+
+Notazione grafica compatta
+	quano il NOT(l'inverter) si trova su un ingresso o su una uscita di una porta logica può essere denotato con un pallino vuoto su quell'ingresso o uscita, al posto che inserire il componente grafico visto in precedenza.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

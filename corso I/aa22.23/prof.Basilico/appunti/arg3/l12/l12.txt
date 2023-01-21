@@ -1,0 +1,140 @@
+Allora il nostro sommatore finale avrà l'aspetto in figura (FOTO
+
+@ due ingressi ad n bit: a e b (gli operandi)
+@ una singola uscita su n bit: a+b (somma)
+@ un riporto iniaziale in figura r_in corrispondente a r0
+@ un riporto finale r_out, corrispondente al riporto relativo alla somma dei bit più 	significativi, associato a z, da scartare
+
+
+
+SOTTRAZIONE
+
+Utilizziamo il modulo dell'addizione che abbiamo già costruito, estendendolo alla gestione delle sottrazioni.
+
+La sottrazione si tratta di una somma algebrica con segno, a-b, e si interpreta ed esegue come una somma binaria tra a ed il complemento a 2 di b
+
+Complemento a 2 di b: complementare a 1 e sommare 1
+
+Il circuito che utilizzeremo è : FOTO
+
+	- Adder: che si occuperà della somma
+	- operando a: entra diretto nell'adder
+	- operando b: prima di entrare nel adder deve attraversare lo stadio del multiplexer
+
+		Nel mux entrano b o not_b(complemento a 1)
+		Il comando inverti-, è un segnale di controllo, serve al mux per determinare quale linea far passare (b o not_b) all'ingresso dell'adder.
+		Ma non basta perché nel caso della somma di -b, b è in Ca1, allora lo stesso segnale di inverti-b, che rappresenta un 1 bit a uno, lo utilizzo come riporto iniziale nell'adder per "permettere la conversione" di b in Ca2.
+		Nel caso della somma normale inverti-b sarà pari a 0 e non ci sarà alcun riporto iniziale.
+
+		Dunque inverti-b produce due effetti:
+		- Adder riceve il complemento a 1 di b
+		- Adder riceve un riporto in ingresso pari a 1
+
+			In questo caso l'adder esegue:
+			a + not_b + 1 = a + (not_b+1) = a - b
+
+			Se inverti-b è a 1, z va scartato, altrimenti riporta un overflow.
+
+
+	Alternitiva d'implementazione:
+	Quella struttura (FOTO) ricorda un componente già visto...
+	Che faceva un complemento a 1 "a comando"... una delle interpretazioni dello XOR era che un input era il dato l'altro input il comando che decideva se invertire o meno il dato.
+	Quindi al posto mux presente avrei potuto implementare una batteria di XOR, dove in ciascun XOR, un input corrispondeva ad inverti-b e l'altro il bit del dato che deve esser negato o meno a seconda dell'operazione da fare.
+
+
+
+ESTENSIONE DI SEGNO E SHIFT
+
+Esetensione di segno: ho un segnale su n bit che voglio dare in input ad un circuito che riceve segnali su n + m bit
+
+	Estendere il segno vuol dire replicare a sinistra l'MSB fino a raggiungere il numero totale di bit desiderati; nel caso in cui gli n bit iniziali rapppresentino un naturale o un intero in Ca2, questa operazione non altera il valore rappresentato.
+
+	Questa operazione prende il nome di estensione in segno.
+
+	FOTO
+
+
+
+SHIFT: si tratta dello spostamento di un numero, trascinare gli n bit verso sinistra o destra di k posizioni: sinistra << k ; destra >> k
+	
+	Facendo lo shift, k cifre scompaiono e compaiono k nuovi 0:
+		a destra x shift a sinistra ( << k ) - sposto k bit verso sinistra e compaiono a destra i nuovi bit a 0
+
+		a sinistra x shift a destra ( >> k ) - sposto k bit verso destra e compaiono a sinistra i nuovi bit a 0
+
+
+	Note: se i bit rappresentano un numero naturale e non vengono oppressi bit a 1, 
+			<< k equivale ad una moltiplicazione per 2^k del numero n
+
+		  Discorso duale per >> k, in cui si ottiene una divisione per 2^k di n 
+
+
+SVOLGERE ESERCIZIO FOTO
+
+
+MOLTIPLICATORE
+
+In generale il prodotto di 2 numeri su n bit, può dare un risultato su 2n bit, di norma si suddivide il risultato in due numeri separati:
+-con HI si indicano gli n bit della parte alta (inddicano anche se c'è un overflow)
+-con LO si indicano gli n bit della parte bassa
+
+FOTO(Operazione)
+La moltiplicazione binaria si organizza in due fasi
+	1. calcolo dei prodotti parziali
+	Valido solo per i numeri binari, date le cifre del moltipliatore, ogni cifra la scorro verso destra e:
+	- per ogni 1 che trovo, faccio una copia del moltiplicando
+	- per ogni 0 che trovo, faccio una copia di 0 pari al  numero di bit del moltiplicando
+	- ogni iterazione trascrivo il risultato a sinistra di 1 posizione
+
+	2. eseguo la somma bit a bit (considerando anche i riporti dei prodotti parziali)
+
+
+
+FOTO(Algebrica)
+
+Schema circuitale
+I prodotti parziali corrispondono a degli AND, rappresentano dei prodotti logici.
+Per le somme incolonnate useremo i sommatori e ed eseguire degli shift di un certo numero di posizioni(1) per ogni prodotto parziale.
+
+Partiamo dall'interpretazione più semplice 1xn:
+	Consideriamo un moltiplicatore che prende in input un singolo bit(b) e un operando su n bit(a), ci serve per calcolare ciascuna riga di prodotti parziali (esempio con n=5)
+
+	FOTO
+
+	Da questo esempio costruiamo un moltiplicatore n x n
+		a. calcolo dei prodotti parziali [ moltiplicando(a) x moltiplicatore(b_i) ]
+		b. eseguo estensione del segno
+		c. effetuo li shift delle somme parziali
+		d. eseguo la somma delle somme tramite cascata di somme a propagazione di riporto
+
+
+	FOTO
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

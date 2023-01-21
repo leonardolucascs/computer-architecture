@@ -1,0 +1,37 @@
+# .gitignore file
+
+# Blocklist files/folders in same directory as the .gitignore file
+/*
+
+# Include-list some files
+!.gitignore
+!README.md
+
+# Ignore all files named .DS_Store or ending with .log
+*.DS_Store
+*.log
+
+# Include-list folders
+
+#### Questo dice a git di versionare solo la cartella corso I/aa22.23
+!corso\ I
+corso\ I/*
+!corso\ I/aa22.23
+
+
+#### track corso II/aa20.21lab
+!corso\ II
+corso\ II/*
+!corso\ II/aa20.21lab
+
+
+#### track testi/
+#!testi
+
+# Ignore protected directories - files
+*.zip
+*.webloc
+
+# Ignore system file
+.DS_STORE
+

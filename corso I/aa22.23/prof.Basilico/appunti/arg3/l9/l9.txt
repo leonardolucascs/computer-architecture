@@ -1,0 +1,247 @@
+Forme canoniche pt.2
+
+CONFRONTO USO FORMA CANONICA
+Se invece di usare la forma canonica avessi usato la forma semplificata, ovvero la funzione così come specificata nella traccia dell'esercizio, ci si rende conto che sia il circuito che l'espressione della funzione è molto più compatta.
+Ottenere quella funzione a dx compatta a partire da una tabella di verità avrebbe avuto un costo maggiore, dovuto ad una serie di applicanzioni di varie proprietà con le giuste semplificazioni, rispetto alla facilità e il meccanismo semplificato per ricavare quella a sx.
+
+La f. canonica risulta più facile da fare, non richiede ragionamenti elaborati e di norma ci restituisce circuiti molto più complessi.
+
+Se mettiamo a confronto invece i rispettivi circuiti notiamo subito come a dx ci sia un circuito composto solo da porte a 2 ingressi, in totale 3 porte logiche escludendo l'inverter, mentre a sx troviamo porte a ingressi multipli che vengono implementate attraverso una sequenza in serie di porte a 2 ingressi pari a n-1 porte, n sono gli input per quella porta. Pertanto se implementiamo questa struttura sottostante ciascuno di quei and richiede 3 porte logiche, avendo 4 ingressi, viceversa l'or con 13 ingresso richiederà una catena di 12 or a due input, quindi in totale il circuito di sx avrebbe 13(mintermini)x3=3 porte solo per gli and e 12 porte per or per un tot. di 41 porte, mentre a destra solo 3.
+
+Differenza di un certo peso, è il costo che si paga per adottare un metodo semplice e meccanico(f.canonica).
+
+Dunque Comparare i circuiti sx-dx sarebbe un processo unfair, in quanto per ogni and a multiplo ingresso sotto ci sarebbe l'implementazione a cascata di and a 2 solo porte logiche.
+
+Inoltre c'è da individuare che a sinistra la SOP è più complessa, basta ricordare che una porta a n input si implementa come n-1 porte da 2 input collegate in serie.
+
+Inoltre circuito a dx non ha alcun pattern, nessuna struttura e non ha stadi mentre a sx esiste una struttura.
+
+
+
+Altro dettaglio, l'espressione della f in p.f.canonica a confronto con quella a dx si nota la differenza di lunghezza, ma si nota una certa somiglianza in quanto si presentano entrambe come somme di prodotti, nonostante ciò quella a dx non è una somma di prodotto per la mancanza di mintermini(per definizione devono essere presente tutte le variabili nel singolo mintermine).
+
+MINTERMINE
+Dunque l'espressione: f(a,c,d) = a_negatob + [cd]_negato
+-non rappresenta una forma canonica
+- il termine a_negatob è un prodotto ma  non un mintermine perché non compaiono tutte le variabili.
+=> Se una funzione è una somma di prodotti, quei prodotti che non includono tutte le variabili si chiamano IMPLICANTI
+
+Gli implicanti sintetizzano somme di mintermini, è come se dicessero che le variabili non specificate possono assumere qualsiasi valore
+
+es. abc + abc_negato	
+	ab(c + c_negato)
+	ab 				-> implicante
+
+	questa somma di mintermini si può scrivin in forma compatta come implicante ab
+
+
+
+
+SECONDA FORMA CANONICA
+Grazie all'ipotesi del mondo chiuso posso fornire una descrizione completa della funzione logica indicando tutti i punti in cui ha valore 0, ciò che non indico avrà implicitamente valore 1.
+
+Il procedimento per ricavare la seconda f.canonica segue il ragionamento della p.f.canonica
+1a colonna: si consierano le configurazioni in cui la funzione è falsa
+2a colonna: si costruisce il duale nelle configurazioni considerate, per costruire dei termini che fossero veri in quei punti.
+3a colonna:  si ottegono i termini
+
+Ora:
+- Se dovessi legare i termini trovati con l'or come per la SOP, la funzione che ottengo, che funzione è?
+Sto dicendo con il procedimento appena svolto che in quei 4 punti la funzione è vera! Ma voglio dire che in essi la funzione è falsa! 
+Quelle 4 configurazioni corrispondono alla falsità della funzione... se prendessi i valori corrispondenti per la configurazione 011 otterrei 1 e non 0
+Quindi starei indicando not_y
+=> per ottenere y basta mettere tutto sotto negazione
+
+
+Ora la y trovata afferma che la funzione vale 1 quando "non siamo nella 1a conf., E non siamo...2a conf., E non siamo ...3a conf., E ...4a. conf." mentre vale 0 in ognuno dei 4 punti.
+
+Cosa regge questo scambio di "E" quando c'è un + nella funzione? Teorema di deMorgan
+È l'unico teorema che mi permette scambiare and-or e + con *
+
+
+y = a_negato b_negato c + a_negato b c + a b_negato c_negato + a b c_negato]_negato
+
+	** applico de morgan [ A + B ]_negato = A_negato + B_negato
+
+  = a_negato b_negato c]_negato + a_negato b c]_negato + a b_negato c_negato]_negato + 
+    a b c_negato]_negato
+
+   ** applico de morgan nuovamente
+
+  = a b c_negato + a b_negato c_negato + a_negato b c + a_negato b_negato c
+
+
+y = SECONDA FORMA CANONICA
+	(a+b+not_c)(a+not_b+c)(not_a+b+c)(not_a+not_b+c)
+
+Questa è la seconda forma canonica, ottenuta con un ragionamento duale rispetto alla prima
+Anche in questo caso è un procedimento meccanico che possiamo applicare a qualsiasi funzione
+
+I termini trovati sono definiti come MAXTERMINI:
+	-Sono definiti come OR tra tutte le variabili (input) della funzione, ogni variabile compare una volta sola nella sua forma naturale o negata
+	-Ne abbiamo uno per ogni configurazione di input in cui la funzione vale 0
+	-Se nella configurazione di input corrispondente la variabile vale 1, nel maxtermini comparirà negata, altrimenti in forma naturale
+	- Chiamanfo M_i, l'iesimo maxtermine, una funzione y può essere sempre espressa come l'AND tra tutti i suoi n maxtermini
+
+
+Dunque la 2a f.canonica si presenta come prodotto di somme(maxtermini), Product of Sum(POS)
+
+In breve
+
+@Scrittura dell'espressione booleana:
+	-identificare i maxtermini della funzione
+	-combinarli con un and
+
+@Sintesi del circuito
+	-ogni maxtermine corrisponde ad un OR a più ingressi(tanti quanti le variabili)
+	-valgono le stesse considerazioni che abbiamo per la SOP
+		In cui individuiamo
+			uno stadio OR
+			uno stadio AND
+
+FOTO EX.
+
+VALUTARE COSTI E PRESTAZIONI
+
+LIMITI DEI CIRCUITI LOGICI
+Le due forme canoniche sono il metodo più semplice con cui sintetizzare un circuito combinatorio a partire dalla tabella di verità
+
+Come faccio a misurare le prestazioni di un circuito che implementa una funzione logica, quanto è efficente quell'implementazione?
+Ci sono delle regole olistiche[Il termine olistico deriva dal greco “olos”, che indica la totalità, la globalità di qualcosa] come contare il numero di porte.
+
+La semplicità ha un costo, finora valutato considerando aspetti come lunghezza espressione, grandezza del circuito e numero di porte.
+
+Per caratterizzare in modo quantitativo e rigoroso questo costo dobbiamo considerare che i circuiti sono componenti hardware con annessi limiti fisici:
+
+-Propagation delay, in ogni porta logica se al tempo t gli input cambiano, l'uscita non commuta(passa da 0 a 1 o viceversa) in modo istantaneo, l'output sarà stabile solo dal tempo t+Delta_p
+
+-Fan-out limitato: il numero di ingressi a cui posso collegare una uscita(pilotaggio) è limitato; in generale collegando un'uscita a un numero maggiore di ingressi il tempo di commutazione aumenta.
+Sostanzialmente c'è un discorso legato alla perdita del segnale.
+
+Concentrandoci sul propagation delay parliamo di cammino critico
+
+
+CAMMINO CRITICO(CRITICAL PATH)
+- Ogni porta logica che un segnale deve attraversare introduce un ritardo additivo sul tempo di commutazione dell'uscita
+- Nel suo percorso dall'ingresso all'uscita il segnale paga un ritardo Delta_p, ogni volta che viene attraversata una porta logica
+- La lunghezza massima di tutti i percorsi presenti in un circuito si chiama cammino critico
+- È una buona metrica con cui valutare le performance di un circuito, più grande è il cammino critico più lento sarà il circuito 
+
+Attenzione alla propagazione in parallelo del segnale, due porte che lavorano in parallelo contano come singolo attraversamento, il ritardo si paga quando c'è sequenzialità.
+Più è grande il circuito, maggiore sarà il tempo richiesto per stabilizzare l'uscita.[caso circuiti combinatori].
+
+Il ritardo delle porte logiche è legato alla realtà fisica dei componenti che compongono le porte logiche, ossia i transistor.
+
+
+Parlando di cammino critico come metrica di performance possiamo proporre una implementazione migliore delle porte logiche ad n ingressi.
+
+	Costo
+	implementazione normale(cammino lineare): n_input-1
+	implementazione migliore(cammino logaritmico): ceil(log2(n_input))
+
+	(?)Però xké log2(N)
+
+
+FOTO
+
+Altri criteri che si possono utilizzare:
+- area occupata
+- n tot. porte
+- energia dissipata
+- facilità interperetazione
+
+In generale avere una forma semplificata migliora queste metriche, semplificare è più difficile ma porta a dei vantaggi.
+
+[In generale il cammino critico è definito dal segnale che attraversa più porte logiche, non per forza è il primo segnale]
+
+
+
+
+PARITÀ E MAGGIORANZA
+
+FUNZIONE DI PARITÀ
+La funzione di parità è una funzione logica, che prende i bit in input ed è pari a 1 se il numero di input a 1 è dispari, 0 altrimenti.
+Può essere pensato come un modulo che riceve un input l su n bit e che pone in uscita il bit di parità p(l).
+
+La funzione di parità non svolge l'attività di confermare se i bit siano pari o meno, il concetto di parità non si applica solo all'input, ma anche al valore della sua funzione, dunque cerca di rispondere alla domanda quanti bit devo aggiungere affinché il numero di bit sia pari.
+
+001 -> p(I)= 1
+101 -> p(I)= 0
+
+(FOTO) La freccia con n sopra indica, non indica un singolo segnale ma bensì rappresenta n fili avvolto da una guaina con un singolo segnale, la barra sopra sta ad indicare l'ampiezza.
+
+ESERCIZIO: Sintetizzare il circuito della funzione di parità su 3 bit
+	- stiliamo la tabella di verità
+	- prendiamo i mintermini(più da ricavare in questo caso)
+	- sintetizziamo il circuito
+
+
+ANALISI DELLA FUNZIONE PARI
+Supponendo di spezzare un input I, in due parti, prefisso(I1) e postfisso(I2), calcolando le rispettive funzioni di parità ricaviamo la funzione parità di I
+	
+	Infatti se p(I1)=0(il numero di bit a 1 è pari)
+			   p(I2)=0
+
+			   Indica => p(I) = 0
+
+			se p(I1)=1(il numero di bit a 1 è dispari)
+			   p(I2)=1
+
+			   dispari + dispari -> si ottiene sempre un numero pari
+			   => p(I) = 0
+	
+	Riassumendo in una tabella di verità ci si accorge che rappresenta l'Exclusive Or, XOR
+
+	=> Questa rappresenta la terza proprietà dello XOR, dati due input A e B.
+
+	È possibile utilizzare questo metodo per qualsiasi stringa di n bit, applicata uno funzione XOR in maniera ricorsiva.
+
+	XOR in cascata rappresenta la funzione parità su n bit.
+
+
+FUNZIONE DI MAGGIORANZA
+La funzione di maggioranza vale 1 se il numero di bit in input a 1 è maggiore del numero di bit pari a 0, 0 altrimenti.
+
+Esercizio: Sintetizzare il circuito della funzione di maggioranza su 3 bit.
+
+FOTO
+ 
+Partendo dalla prima forma canonica, dopo aver estratto i mintermini, è possibile notare già dalla lettura dell'espressione il significato della funzione di maggioranza, i termini trovati sono tutti i mintermini in cui compaiono le configurazioni con un numero maggiore di 1.
+
+Esiste l'opportunità di semplificazione dell'espressione, prendo come esempio il mintermine ab_notc, 
+a e b devono valere 1, il valore di c è superfluo non mi interessa che sia not_c, dunque al posto di quel mintermine c'è la possibilità di avere un implicante(ab) su quel mintermine, inoltre è possibile raccogliere pure il termine abc per ab.
+
+Attraverso l'utilizzo di alcune proprietà è dunque possibile ottenere una semplificazione.
+	- idempotenza del termine abc
+	- distributiva dei termini, per raccogliere pure gli altri due mintermini
+	- Inverso e identità
+
+	=> ottengo una forma semplificata dell'espressione di partenza, data dalla somma degli implicanti
+
+Gestione n_bit pari: 2-00 e 2-11 cosa avviene??
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,270 @@
+SEMPLIFICAZIONI DI CIRCUIII
+Come?
+- Ottenere un circuito + semplice lavorando sulla sua espressione Booleana
+- Applicare proprieta operatori logici semplificando l'espressione di partenza, a seconda delle proprietà usate otteniamo semplificazioni diverse, di costo diverso e, in generale non abbiamo la garanzia di aver la migliore semplificazione
+
+- Mappe di Karnaugh, metodo meccanico(e grafico) per la semplificazione delle espressioni Booleane basato sull'identificazione degli implicanti
+	=> garantisce di trovare l'espressione minima
+
+
+MAPPE DI KARNAUGH
+In una funzione con n variabili, ogni configurazione di input è rappresentata da una stringa di n bit
+
+Come abbiamo visto nella codifica dei numeri binari naturali, esiste uno schemo grafico per rappresentare stringhe binarie.
+
+- tabella di verità
+- schema grafico, per 1 variabile(punto), per 2 variabili(linea), per 3 var.(cubo), per var. >3 è qualcosa che esiste astrattamente ma è difficile da disegnare su un foglio.
+
+Rappresentazione:
+	-Ciascun vertice rappresenta una configurazione di input, alcuni(evidenziati in rosso) rappresentano i mintermini della funzione.
+
+	Ad ogni collegamento percorso lo spostamento implica il cambiamento di una e una sola variabile, è come se ci spostassimo lungo una sola dimensione.
+
+	Le linee rosse stanno ad indicare che [percorso per quel tratto lì]/[indipendentemento dall'estremo in cui mi trovi] la funzione è sempre vera percorsa in un senso o nell'altro, in altre parole
+
+	-A ogni lato corrisponde una variabile, quella che  cambia percorrendo quel lato
+
+	Lato e collegamento sono sinonimi
+
+	-Dati due vertici mintermini, il lato che li connette rappresenta un'opportunità di semplificazione da cui calcolare un implicante.
+
+
+	Questo principio può essere trasposto non solo per singoli lati, ma è possibile la sua applicazione anche a "gruppi" di vertici connessi.
+
+
+=> Idea: Identificare gruppi connessi di vertici sulla rappresentazione grafica può guidarci nel costruire una forma semplificata
+
+Limite: per farlo manualmente abbiamo bisogno di una rappresentazione grafica ma...p er n variabili >4 inizia a diventare complicato
+
+Un software non necessita di visualizzare la rappresentazione e può lavorare nello spazio delle adiacenze in n dimensioni senza dificoltà
+
+=> Passiamo dalla rappresentazione grafica su n dimensioni a una rappresentazione piana su 2 dimensioni(tabellare, su cui è più facile trovarne i gruppi di adiacenza)
+
+FOTO
+
+caso 2variabili)	
+	la colonna indica i valori di a
+	la riga indica i valori di b
+	L'intersezione indica una delle possibili configurazioni presenti a lato, nella rappresentazione grafica
+
+caso 3variabili)
+	Le colonne indicano le variabili ab
+	La riga la variabile c
+
+	L'ordine degli indici in colonna nella tabella non è casuale, seguono la codifica di Gray
+	Quando mi sposto tra colonne adiacenti il cambio è pari ad una sola variabile
+		
+	Le tabelle sono costruite rispettando questa regola.
+
+
+Si noti che le coppie di variabili di input (A,B e C,D) sono ordinate con il codice Gray, in modo che fra coppie di celle adiacenti cambi una sola variabile (distanza di Hamming = 1).
+
+caso 4variabili) adiacenza a 4 - ogni cella ne ha 4 adiacenti
+	La rappresentazione grafica prende il nome di Toro.
+
+	È una superfice (equivalente al cubo in 4D) in cui ogni colore corrisponde ad una configurazione di input.
+	Ha una proprietà interessante che ogni spostamento da una regione adiacene ad un altra porta alla modifica di una sola variabile.
+
+
+La rappresentazione piana è ciclica!
+Questa regola di adiacenze risiede in una struttura denominata wrappedaround world, lo spostamento che avviene seguendo una direzione orizzontale o verticale vale anche uscendo dalla tabella e rientrando dal lato opposto.
+
+
+PROCEDIMENTO: MAPPE DI KARNAUGH
+-In ogni direzione della tabella  seguiamo la codifica di Gray
+-In ogni casella, indichiamo il valore corrispondente della funzione: 0 oppure 1
+	Questo valore deriva dalla tabella della verità, il valore assunto dalle singole configurazioni
+-Formare dei rettangoli, anche sovrapposti, che racchiudano tutti gli 1 e la cui area:
+	-sia il più grande possibile
+	-sia una potenza di 2
+
+	Bisogna trovare rettangoli con solo aree che siano pari a potenze di 2
+
+	Aree più grandi permettono ignorare maggior numero di variabili, e quindi più compatto sarà l'implicante che generano.
+
+	Tutti gli 1 devono essere almeno dentro un rettangolo, non posso lasciare libero alcun 1.
+
+-Per ogni rettangolo, scriviamo l'implicante associato includendo le variabili(negate o naturali) che non cambiano di valore (restando 0 o 1) quando percorro ogni direzione di lato del rettangolo
+
+-Metto in OR tutti gli implicanti
+
+
+PRIMO CASO - 2 varibili
+FOTO: nel primo caso non c'è modo di ingrandere quei due rettangoli, il vincolo che l'area sia una potenza di 2 li limita, inoltre non sarebbe possibile costruire un rettangolo combinandoli.
+
+FOTO: Oltre al rettangolo arancio avrei potuto tracciare anche quello in rosso, comunque valido(wraparround world), ma sarebbe stato superfluo in quanto gli 1 interni sarebbero già stati individuati da quello arancio.
+Usare uno o l'altro è indifferente però è un altra possibile soluzione, da notare, nell'individuare i rettangoli 
+
+
+FOTO: Altro caso, trovato il rettangolo verde di area 2(potenza di 2), individuare il rettangolo rosso di area(1) sarebbe un errore!
+Nonostante tutti gli 1 siano coperti e l'area rossa (=1 sia potenza di 2) la sua non estensione è un errore! Il rettangolo può essere espanso al suo adiacente. La sovvrapposizione è fattibile
+
+
+-----
+
+Questi rettangoli definiscono le regioni di verità della funzione.
+Tali retangoli vengono definiti dalle variabili che sopravvivono alle semplificazioni nel generare gli implicanti di quel rettangolo.
+
+Prendiamo in considerazione ad esempio il caso a 4 variabili.
+Nell'area verde le variabili in considerazione sono ab che che non cambiano mai, e cd che variano per ogni riga, dunque le variabili che cambiano(cd) si scartano poiché non influiscono sul valore di verità, e si prendono como implicanti per quel rettangolo ab con a negato perché a valore 0 mentre b naturale
+			implicante rett. verde = not_ab
+
+Eseguiamo questo procedimento per gli altri rettangoli
+			implicante arancio = cd 		[si scarta ab - variano]
+			implicante giallo = anot_bd		[si scarta c - varia ]
+
+La forma semplificata ottenuta è dunque:
+
+	f(a,b,c,d) = cd + not_ab + anot_bd
+
+
+
+Questa espressione descrive tutte le regioni di verità semplificate al massimo.
+
+
+
+
+
+
+
+BLOCCHI FUNZIONALI
+
+
+Nella sintesi di cricuiti digitali, esistono dei sotto-circuiti che ritornano spesso perché svolgono elaborazioni molto comuni.
+
+Modularizzazione
+Idea: Modularizzare questi circuiti in blocchi funzionali permettono il loro utilizzo come elementi di una libreria
+
+Questo consente il loro utilizzo ignorando la loro implementazione interna, già nota a priori, senza dover ricorrere a crearli da zero e semplificando la sintesi di circuiti molto complessi.
+
+
+DECODER(DECD)
+
+Componente - circuito costituito da n ingressi e 2^n uscite
+
+Gli n bit di ingresso possono essere pensati come un valore binario naturale nell'intervallo 
+[0 : 2^n-1]
+
+Il numero di valori possibili è pari al numero di uscite: ogni valore identifica una linea di uscita
+
+Se in ingresso ho il valore i, allora l'i-esima uscita è asserita(vale 1), tutte le altre valgono 0(le linee si contano a partire da 0)
+
+Si comporta come un "selezionatore"
+
+Esempio:
+	Se i = 101 (5 in base 10) allora y_5 = 1 e tutte le altre linee 0
+	Se i = 111 (7 in base 10) allora y_7 = 1 e tutte le altre linee 0
+
+
+INTERPRETAZIONI
+-Il numero i è il codice che identifica l'i-esima linea, il circuito riceve un codice e accende la linea corrispondente
+
+-Converte un valore nel suo codice one-hot (un gruppo di bit con un singolo 1).
+					
+	One-hot encoding: La codifica in one-hot è un altro modo per rappresentare un numero in binario, ponendo tutti i bit a 0 tranne 1.
+
+	One-hot : sta per uno caldo(1 bit a uno)
+	La sua controparte One-cold, una simile rappresentazione in cui tutti i bit sono posti a 1 tranne uno.
+
+	Problematiche: 
+	-inefficente per rappresentare un numero, per uno stesso range di valore tra una codifica e un'altra necessita, di più bit
+	-le operazioni aritmitche risultano più difficili
+
+	Questo tipo di rappresentazione in certe applicazioni sta meglio, una su tutte, le reti neurali.
+
+
+
+CIRCUITO INTERNO
+
+Esempio: costruire il circuito per un decoder a 3 bit
+
+Procedimento:
+	-Tabella di verità
+		Con n input di ingresso[3 in questo caso] si hanno: 
+		2^n_ingressi: numero configurazioni disponibili
+		2^n_ingressi: uscite
+
+		Tante colonne quante sono le uscite [8 colonne di uscite da y0 a y7]
+
+Il nostro decoder a 3 bit può essere pensato come 8 diverse funzioni logiche tutte raggruppate nello stesso circuito.
+
+		In corrispondenza di ogni riga di configurazione soltanto una delle 8 funzioni logiche vale 1 tutte le altro hanno valore 0
+
+	-Sintesi circuito
+		Ciascuna funzione logica ha un solo mintermine, sono n_mintermini per n_funzioni logiche
+
+La struttura del circuito scala con l'aumentare dei bit.
+
+
+
+
+ENCODER(PRI)
+
+Può essere pensato come l'opposto del decoder, 
+Componenti: 2^n ingressi e n uscite
+Funzionamento: Tra i 2^n input, solo uno deve essere a 1, in uscita leggo un codice binario
+corrispondente
+				Di fatto deve entrare solo il one-hot encoding dell'uscita che voglio accendere
+
+				Confrontando la tabella di verità nelle configurazioni in cui è presente un solo 1 otterrò un codice di uscita associato, negli altri casi sono presenti delle x, il circuito non deve essere usato con quelle configurazioni affinché funzioni
+
+				Le x nella tabella di verità rappresentano dei "don't care" cioè valori rispetto a cui sono indifferente: sono configurazioni di input possibili, ma che non sono soggette alla specifica
+
+Assumendo che sia garantito che non si presentino mai degli input illegali, si può sintetizzare la tabella di verità come se fosse una funzione a 4 variabili, in cui le x le scegliamo liberamente per semplificare l'implementazione del circuito, che sia 0 o 1 non importa, ma magari che ci sia 1 cambia la complessità del circuito, dunque conviene scegliere x=0
+
+Dalla tabella di verità ricorriamo all'utilizzo della prima forma canonica per sintetizzare il circuito, e notiamo che la prima funzione logica y0, ha due mintermini, la seconda ha 2 mintermini, però ne condividono uno.
+
+
+Dentro l'encoder c'è la dicitura PRI => il circuito si può rappresentare come un circuito che restituisce la priorità
+
+
+MULTIPLEXER(MUX)
+
+Di fatto si tratta di un selezionatore.
+
+Composizione: circuito con 2^n + n input e 1 bit uscita
+
+Funzionamento:	I 2^n ingressi rappresentano le linee dati: ciascuna linea presenta al MUX un singolo bit
+				I restanti n input sono un segnale di controllo(selezione): un valore naturale che identifica quale delle 2^n linee dati passa verso l'uscita
+
+
+CIRCUITO INTERNO
+
+Consideriamo un caso semplice: mux a 2 ingressi
+
+Per n ingressi ho bisogno di un segnale S bit di selezione, pari a log2 n_lineeIngresso, dunque in questo caso occorre 1 singolo bit(MUX con selezione 1 bit).
+
+
+Dopo aver stilato la tabella di verità -> SOP -> sintesi circuito
+
+Ci si accorge che il mux si comporta come un selezionare in base al segnale di controllo S.
+Le porte sono mutuamente esclusive.
+
+L'implementazione di un mux a n vie non cambia la struttura ma viene aggiunto l'impiego di un decoder.
+Il comportamento del decoder ci permette usarlo nel circuito come una chiave, n dati input permettono l'accensione di una singola linea.
+
+I quattro dati d0..d3 si presentano sulla porta and, per poter passare verso l'uscita il singola segnale ha bisogno che l'altro ingresso sulla porta associata sia a 1.
+
+Questo è un altro modo di vedere la porta AND.
+
+Dunque:
+-Attraverso il segnale di controllo s poniamo ad 1 la linea di ingresso ad uno degli AND
+-Quando un input di AND viene posto a 1, l'uscita è uguale all'altro input(come se questo passasse verso l''uscita)
+-Poiché il decoder asserisce una sola linea, un solo AND avrà in uscita il dato, gli altri avranno in uscita 0.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

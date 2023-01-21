@@ -1,0 +1,159 @@
+Esercizio: MUX a 1bit
+
+Idea:
+
+linee dati: 2^1 linee
+segnale controllo: 1 linea(0 - 1)
+
+Per s=0 , output=d0
+	s=1 , output=d1
+
+-Tabella verità
+	Input: 3
+	Output:1
+	Configurazioni: 2^n_input, 8
+
+-Identificazione Mintermini
+-Espressione
+-Semplificazione espressione
+-Sintesi circuito
+
+
+
+COMPARATORE(semplice - su numeri naturali)
+
+Componente che riceve in ingresso due numeri binari su n bit a e b e calcolo tre uscite corrispondenti a tre test di confronto sul valore rappresentato:
+-test maggioranza stretta a > b, uscita y: >
+-test uguaglianza a==b, uscita y: =
+-test minoranza stretta a < b, uscita y: <
+
+Dati due valori in input, una sola delle tre uscite sarà pari a 1, le altre due saranno pari a 0
+
+Sintesi:
+Vediamo un nuovo metodo di sintesi per un circuito, partendo dal comparatore più semplice ad un biy, andremo a definire comparatori a n bit in maniera ricorsiva.
+
+Esempio: Comparatore a 1 bit
+
+Numeri definiti su un singolo bit, numeri rappresentabili: 0 o 1
+
+Come dovrebbe funzionare il componente?
+Caso
+	a>b:	come faccio a dire che a > b, su un bit? bisogna implementare una funzione logica che vale 1 quando a>b, cosa vuol dire? a=1, b=0.
+
+	a<b:	stessa cosa vista prima ma al contrario a=0, b=1
+
+	a=b:	su una porta sola conosciamo un componente che ha una funzione di uguaglianza? Sì, lo XNOR
+			Dunque con lo XNOR determiniamo l'uguaglianza
+
+
+La prima e la seconda le possiamo pensare come prime forme canoniche
+	per la prima il mintermine è anot_b
+	per la seconda il mintermine è bnot_a
+
+
+
+Come costruiamo un comparatore che lavora su n generici bit?
+Ad esempio un comparatore su n = 2 bit
+
+Consideriamo il circuito e analizzaziamolo partendo da destra
+
+Confrontiamo i numeri allineandoli bit per bit, dal meno significativo(a0, b0, in questo caso) al più significativo(a1, b1, in questo caso)
+
+Con il primo comparatore comparo i bit meno significativi
+Un comparatore confronterà a0 con b0 e uno confronterà a1 con b1
+
+
+Caso a = b
+	Se a0=b0  il segnale di uguaglianza sarà a 1(è l'uscita del test di uguaglianza per il primo comparatore); stessa cosa per a1 b1; l'and posto alla fine dirà che se a0=b0 e a1=b1 => a=b
+
+Caso a > b
+	È l'OR tra due casi
+		Il primo, più veloce, è il segnale calcolato dal caso in cui se a1 > b1 allora a>b non importa il resto dei bit
+		L'altro caso è quando i bit più significativi sono uguali, allora guardo bit successivi dove il bit di a sia maggiore del bit di b, se valgono entrambe le condizioni => a>b
+Caso a < b
+	Analogo
+
+
+Abbiamo costruito il comparatore a 2 bit partendo da quello a singolo bit.
+
+Questo schema può essere replicato per ottenere un comparatore da n bit, usando 2 comparatori da n/2 bit: un comparatore confronta le metà meno significative mentre l'altro confronta le metà più significatie.
+	es. 1 comparatori a 4 bit = 2 comparatori a 2 bit
+
+
+
+
+CIRCUITI ARITMETICI
+
+
+HALF-ADDER
+
+-Consideriamo il caso più semplice della somma binaria, di due numeri su 1 bit.
+[Le regole della somma tra naturali e interi in complemento a 2 sono le stesse]
+
+-Scriviamo la regola della somma binaria come se fosse una tabella di verità di una funzione che ha due uscite: il risultsto della somma s e il riporto r
+
+	La somma è uno XOR
+	Il riporto un AND
+
+Cammino critico:1
+
+Nelle tabella di verità manca una regola: 1+1+1 => s=1 r=1
+L'assunzione di questa tabella si limita alla somma di due  soli input, mentre questa regola mancante prevederebbe un ulteriore input.
+
+Questa mancanza d'implementazione di un possibile riporto da sommare fa si che questo componente si chiami half-adder.
+
+
+FULL-ADDER
+
+Il sommatore che rimedia alla mancanza del half adder è il full adder, inoltre l'half adder ci si accorge che descrive solo la prima parte della tabella di verità del full-adder.
+
+Oltre ai due bit a e b in ingresso prevede un input r_in per un eventuale riporto in ingresso.
+
+Dalla espressione riconosco
+Nella somma
+	pattern XOR: not_ab + anot_b = a XOR b
+				 not_(ab) + ab   = a XNOR b
+
+	così come nel passaggio all'ultima riga di semplificazione.
+
+Nel riporto
+	L'ultima riga, in particolare l'uguaglianza è valida nonostante aXORb differisca da aORb, 
+	(confrontando le rispettive tabelle di verità nel caso in cui entrambi a e b siano a 1) per via del primo termine logico ab.
+
+	La presenza però del termine iniziale ab maschera il problema e dunque non influenza il risultato finale, ciò porta a validare l'uguaglianza sopra (come se fosse una specie di assorbimento).
+
+
+Cammino critico: 3 [r_in attraversa 3 porte]
+
+SOMMATORE A PROPAGAZIONE DI RIPORTO
+
+FOTO(sommatore)
+
+Idea: catena di Full-Adder collegati in serie tranne il primo che è un Half-Adder non necessita di riporto in input il bit meno significativo
+
+Ogni componente deve però aspettare la propagazione del riporto proveniente dal componente alla sua destra, motivo del nome del componente.
+
+Per poter leggere il risultato finale devo aspettare che l'ultimo Full-Adder riceva il suo riporto faccia la sua somma ed in quel momento ottengo il risultato.
+
+FOTO: Anticipazione riporto(carry lookahead)
+
+Scopro che lungo la catena dei riporti, ogni riporto ha un' espressione che di fatto dipende solo da a e b e non più dal riporto calcolato dal full-adder precedente.
+
+Idea risolutiva: implementiamo per ognuno di questi riporti il circuito combinatorio  della sua espressione che userà solo a e b.
+
+FOTO: Anticipazione riporto
+Nella foto il circuito è implementato solo per r4, ma il concetto è valido per tutti i riporti.
+Quindi se anziché far arrivare i riporti dalla catenza di propagazione dei full-adder, costruiamo un circuito ad hoc che calcola i singoli riporti utilizzando solo a-iesimo e b-iesimo dei riporti associati, anticipo i tempi e i riduco i costi.
+Nonostante questo processo comporti aggiungere della complessità a livello logico nell'implementarlo non importa perché porta lavoro in parallelo(calcolata in parallelo su ogni full-adder) e riduci i tempi.
+
+FOTO: Racchiudiamo tutti i circuiti combinatori relativi ai riporti in una singola unità, denominata CARRY-LOOKAHEAD UNIT.
+
+L'unità di carry-lookahead prende in input r0, a e b, propaga a e b al full-adder per permette il calcolo della somma ma le catene di propagazione tra i full-addre vengono spezzate perché ciascun full-adder riceverà il suo riporto dall'unità del look-ahead.
+
+In questa struttura ogni full-adder lavora in parallelo e l'unico limite è dato dal cammino critico dei sotto circuiti per il calcolo di riporto dentro il look-ahead unit.
+
+
+
+
+
+

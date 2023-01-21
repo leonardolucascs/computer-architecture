@@ -1,0 +1,190 @@
+Metodi per rappresentare una funzione logica
+
+Data una funzione logica f definita nell'algebra booleana, in generale, può essere essere rappresentata in 3 modi:
+	- espressione booleana
+	- circuito combinatorio
+	- tabella di verità, ossia una tabella che ha una riga per ogni possibile combinazione di valori in input e che specifica, su ogni riga, il valore della funzione nella configurazione corrispondente
+
+Costruzione tabella verità:
+	- per n input ci saranno 2^n righe, 3 input sarà 2^3 righe
+	- n+1 colonne
+Riempimento configurazioni: si scrivono in ordine per comodità, interpretando la configurazione in input come un numeri naturali in binario in successione per riga
+
+Data una funzione logica f:B^n -> B
+	- la tabella di verità è una descrizione esaustiva, una funzione ne ammette una sola
+	- esp. booleana è una descrizione formale che possiaamo leggere facilmente e manipolare con le regole dell'Algebra di Boole, una funzione ne ammette infinite.
+	È chiaro per comodità si cerca di utilizzare quelle con una lettura più chiara e semplificata perché più facili da manipolare
+	-circ. combinatori, è l'implentazione hardware della funzione. Una macchina che rappresenta input e output con dei segnali di tensione e che associa a un dato input un output che rappresenta il valore della funzione in quel input. Una funzione ne ammette infiniti 
+	Anche in questo caso si preferisce considerare tali circuiti più compatti, con meno porte logiche, e la ragione non è solo legata alla facilità d'interpretazione del circuito ma anche al costo.
+		meno porte = meno componenti = costi minori
+
+
+
+OPERATORI COMPOSTI
+and, or e not sono gli operatori logici elementari.
+Gli op. composti sono delle funzioni logiche ottenute dalla composizione degli operatori logici elementari che ricorrono spesso nelle funzioni logiche, sono più complessi ma hanno proprietà interessanti per questo motivo risulta conveniente definirli e rappresentarli con una porta logica associata
+
+OPERATORE COMPOSTO: NAND
+- NOT AND, è un AND negato, è un and con un inveter sull'uscita
+- è l'opposto di and, vale 0 quando entrambi gli input sono a 1
+- completezza funzionale: proprietà importante, utilizzando soltanto porte NAND è possibile costruire le funzioni NOT, AND, OR.
+- Conseguenza di questo, la porta NAND è definita come porta universale in quanto è possibile costruire qualsiasi funzione logica.
+
+es. foto a_negato = (1a_negato)_negato
+l'esp. booleana è retta dalla proprietà identità (a = 1a)
+
+graficamente è possibile implementarla tramite il corto circuito dei due ingressi, a nand a = a_negato, in virtù della proprietà idempotenza(aa=a)
+
+es. foto funzione and tramite NAND
+la  funzione ab(and logico) è possibile ottenerla sia tramite la doppia negazione di ab(quindi usando 2NAND) oppure sempre attraverso l'and con 1(sempre per la proprietà identità)
+
+es. foto funzione or tramite NAND
+per l'or discorso uguale, la prima equivalenza si spiega tramite deMorgan guardandola dal senso inverso, e usando il solito 1 permette poi di arrivare alla funzione or, a+b
+
+OPERATORE COMPOSTO: NOR
+- NOT OR, è un or negato, con un NOT all'uscita
+- opposto del or, vale 1 solo quando entrambi gli input sono a 0
+- Anche qui vale la prop. della completezza funzionale ed è una porta universale, il tutto si spiega tramite il principio di dualità, ciò che vale per l'and vale per l'or in senso duale
+- Conseguenza di questo, tutte le costruzioni viste in precedenza tramite NAND si ricavano semplicemente attraverso le rispettive duali 
+- porta universale
+
+OPERATORE COMPOSTO: XOR
+- eXclusive OR, è un or speciale, esclusivo, operatore booleano ⊕ (cerchio con + )
+- vale 1 solo quando uno e uno solo degli input sia a 1
+- si esprime con l'espressione booleana: "quando a è vera e b falsa o quando a è falsa e b è vera": ab_negato+a_negatob.
+
+Cerchiamo di capire...
+- quando [ab_negato] risulta vera: (un solo caso) a=1 b=0
+- 		 [a_negatob] risulta vera: a=0 b=1
+- 		 [ab_negato + a_negatob] risulta dunque vera solo quando uno dei due a,b vale 1 e l'altro 0
+
+È interessante perché 3 interpretazioni:
+- funzione di diversità: vale 1 solo quando i bit sono diversi
+- circuito per il complemento a 1 di un bit: ovvero diamo un interpretazione, a è il dato in input, b è un segnale di controllo. Se b=0 il dato passa verso l'uscita inalterato, altrimenti viene fatto il complemento a 1 dell'ingresso.
+- la terza interpretazione la vediamo più avanti
+
+OPERATORE COMPOSTO: XNOR
+- è il "cugino" dello xor, il duale, è uno xor negato
+- vale 1 solo quando gli input sono uguali
+- conseguenza di questo assume una funzione di uguaglianza
+
+
+
+
+
+
+ANALISI e sintesi DI UN CIRCUITO
+	FORME CANONICHE
+
+Analisi di un circuito: a partire dal circuito o dalla espressione della funzione logica, costruisco la tabella di verità, determinando il valore dell'uscita(o dell'espressione) a fronte di ogni possibile configurazione di input
+
+Sintesi: (più complicato) a partire dalla tabells di verità o dall'espressione booleana costruiamo il circuito che la implementa.
+
+Questa è la parte più interessante perché bisogna vedere la tabella di verità come la specifica del circuito e il circuito è la sua implementazione.
+
+Ora, abbiamo visto che dato un singolo circuito si può ricavere un unica tabella di verità non accade il contrario, poiché per una singola specifica posso avere infiniti circuiti.
+Cosa ci porta a scegliere quale implementazione adottare? Il costo!
+In termini di porte logiche ovviamente, ma ciò porta ad un costo maggiore in termine di ottimizzazione, avere meno porte vuol dire garantire un circuito ottimizzato con un costo di realizzazione maggiore! Sta al progettista/costruttore scegliere quale bilanciamento avere secondo le richieste del committente.
+
+
+Vediamo i metodi per sintetizzare i circuiti:
+	PRIMA FORMA CANONICA
+
+	Questo metodo non garantisce il minimizzare i costi, non garantisce che il circuito sia compatto, è un circuito banale dal punto di vista del layout, il vantaggio sta nel fatto che è un metodo talmente semplice che è possibile automatizzarlo.
+
+	Idea: descriviamo la funzione partendo dalla sua tabella e indicando tutti i punti(le configurazioni input) in cui ha valore 1
+
+	... ma ci una descrizione completa? Sì, non ci servono ulteriori informazioni, dove è 1 implicitamente so dove è 0, descrivere la verità implica sapere dove risiede l'opposto, in gergo tecnico si dice che siamo in un mondo chiuso.
+
+	Procedimento:
+	- consideriamo le configurazioni in cui risultano vere
+	- descriviamo i valori assunti dalle singole variabili nei punti considerati
+	- leghiamo il tutto da oppure(che diventeranno degli or) e le varie uguaglianze(diventeranno degli and) per configurazione tramite e
+	- anziché descrivere gli stati in cui i valori assumono il valore 0 descriviamo il tutto solo per valori uguali a 1 attraverso la negazione la descrizione non varia, questa operazione viene fatta per tutte le uguaglianze in cui esse risultano pari a 0
+	- riasumendo tutto possiamo esprimere le configurazioni trascrivendo e compattando le variabili tramite and
+	- la funzione finale sarà così composta dall'insieme delle singole configurazioni, compatte, per cui risultano vere legato da degli or
+
+	Questa struttura prende il nome di somma di prodotti logici, in in inglese Sum of Products => SOP [termine tecnico], descrive in modo conciso il procedimento appena visto
+
+	In queste somme i termini prendono il nome di MINTERMINI, sono tutti quei termini che descrivono i punti in cui la funzione è vera.
+
+	Mintermini: definiti come AND tra tutte le variabili(input) della funzione, ogni variabile compare una volta sola nella sua forma naturale o negata.
+
+	Per ogni configurazione vera ho n mintermini.
+	Una funzione composta da 2^n mintermini sarebbe una costante 1 vera in tutti i punti
+	Una funzione a 0 mintermini sarebbe una costante 0, falsa in tutti i punti.
+
+	Come si costruiscono i mintermini:
+	- se nella configurazione di input corrisponte la variabile vale 0, nel mintermine comparirà negata, altrimenti in forma naturale
+
+	Chiamando m_i, l'i-esimo mintermine, una funzione y può essere sempre espressa come l'OR tra tutti i suoi n mintermini
+
+	Perchè mintermini?  Il termine deriva dal fatto che, sia l'and pensato come prodotto logico o come una funzione min, dunque il prefisso min della parola mintermine è riferita al fatto che quel termine è un prodotto di n variabili, e quindi se anche uno solo di dei fattori del prodotto è 0 vale tutto 0, quindi prende il valore minimo dei suoi moltiplicandi. 
+
+
+
+	Riassumendo la costruzione della prima forma canonica:
+	Scrittura dell'espressione booleana
+	- identificare i mintermini
+	- combinarli con un or
+
+	Sintesi circuito
+	- Ogni mintermine corrisponde ad un AND a più ingressi(tanti quante sono le variabili)
+
+	CONVENZIONE: buona pratica è collegare sempre gli input in ordine alfabetico seguendo lo stesso verso(dall'alto al basso o da sinistra verso destra)	-> ci permette di capire subito l'espressione del mintermine associato guardando la porta logica.
+
+	Nota sugli AND a ingressi multipli: si implementano tramite una cascata di and a 2 ingressi collegando in serie n-1 porte.
+	Per semplificazione si usare la forma compatta ma deve essere chiaro che si tratta di un componente con una certa profondità e costo al suo interno.
+
+	- Tutte le uscite dei mintermini combinate ad un singolo OR(or a ingressi multipli)
+
+
+	Sintesi circuito: schema a due stadi
+	Analizzando la struttura del circuito è possibili inviduare due stadi.
+	- primo stadio: stadio and, in cui vengono calcolati i mintermini
+	- secondo stadio: stadio or, mintermini aggregati all'ingresso del or 
+
+
+	È evidente che il circuito creato non è nella sua versione più compatta, è possibile fare dei miglioramenti.
+
+	Esempio sintesi circuito
+
+	Nell'esempio visto, c'è da notare un aspetto interessante, i mintermini risultano essere tanti, e la sintesi del circuito risulta essere laboriosa, mentre i casi in cui le configurazioni risultano essere false sono un numero minore.
+	Visto che siamo nel mondo del duale, descrivere dove è vero è sufficente per sintetizzare il circuito implicitamente descrivere il falso porta a sintetizzare un circuito con lo stesso comportamento.
+
+	La scarsità delle configurazioni a 0, porta a pensare un modo più compatto per descrivere questa funzione.
+
+	Dunque descrivere dove una funzione è vera prende il nome di 1a f.canonica, il contrario, descrivere il falso ci porta alla seconda forma canonica.
+
+	Ha un procedimento diverso nella realizzazione ma si fonda sul principio di dualità della prima f. canonica.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
