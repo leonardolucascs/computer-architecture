@@ -5,7 +5,9 @@
 
 # Include-list some files
 !.gitignore
+!.gitattributes
 !README.md
+
 
 # Ignore all files named .DS_Store or ending with .log
 *.DS_Store
@@ -26,7 +28,7 @@ corso\ II/*
 
 
 #### track testi/
-#!testi
+!testi
 
 # Ignore protected directories - files
 *.zip

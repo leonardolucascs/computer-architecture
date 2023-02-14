@@ -1,0 +1,168 @@
+Introduzione al Iº circuito sequenziale
+
+Il Bistabile - SET RESET
+
+Composto da 2 porte NOR
+
+Il nome che hanno è dato dallo stato in cui esso si trova, 1 pari all'uscita e
+1 pari alla copia dell'uscita negata
+
+Com'è fatto internamente? 
+	Le uscite dei NOR tornano indietro di uno stadio e si presentano come input al NOR opposto.
+
+
+Funzionamento
+
+Stati  	S 	R
+		0 	0 	-> non succede nulla
+				... Pongo a 1 il segnale di Set
+		1  	0
+
+L'uscita del primo NOR è a 0 indipendentemente dall'altro input.
+L'output 0 entra nel secondo nor, con ingressi 0 e 0 avrò output 1 che si presenta come prossimo input 
+al primo NOR.
+
+Al comando di Set, al circuito viene dato un output di 1 continuativo, lo stato permane.
+Al comando di Reset, il circuito rimando in uno stato di 0 come output.
+
+L'uscita non dipende solo dagli ingressi ma anche dallo stato in cui il circuito si trova,
+
+Il termine "Bistabile" deriva dalla presenza di 2 stati("Bi"), tali stati permangono nel circuito 
+stabilmente("stabile")
+
+Allo stato stato iniziale in cui s=0 r=0, lo stato iniziale non si può prevedere ne conoscere, 
+dunque la prima cosa che si fa è accendere e fare un reset.
+
+
+Il bistabile SR permette di memorizzare di 1 bit
+	Faccio un set 	-> 1
+	Faccio un reset -> 0
+
+	Fin tanto che permane acceso il circuito
+
+Questa è la condizione principe del funzionamente di una memoria, la memoria degli elaboratori è 
+costituita sulla base di questi principi
+
+Il modo con cui è stato fatto è applicando 2 retroazioni
+
+Se R=S=1, Q e /Q valgono 0!
+	In questa situazione la interpretazione di Q e /Q si prende la semantica della nomenclatura
+
+Se R=S=0, -> ?
+Il segnale dipende da una race condition fuori dal nostro controllo.
+
+Sul manuale di configurazione del nostro bistabile, specificheremo che la configurazione 1=1 non è 
+permessa o non si fa.
+
+
+
+
+
+Il circuito bistabile, viene chiamato "LATCH" - vale a dire chiavistello.
+	
+	Stato di set   - chiavistello chiuso
+	Stato di reset - chiavistello aperto
+
+N.B. Stesso circuito, stessi input, uscite diverse.
+		Sarebbe impossibile con un circuito combinatorio (senza retroazioni)
+
+
+
+Un circuito sequenziale ammette la tabella di verità come i circuiti combinatori?
+	Non funzione come normalmente concepita.
+	Per 2 input ho bisogno di 4 righe-configurazioni ma come abbiamo visto l'output dipende dallo 
+	stato del circuito pertanto c'è la necessità anche di specificare lo stato corrente del circuito.
+
+Questa tabella prende il nome "tabella di transizioni di stato"
+
+	2 input -> 4 configurazioni
+
+
+	Foto...
+
+	Situzione "Don't Care": non avrò mai lo stato S=R=1 ma scegliamo di impostare x->1, in seguito 
+	ne capiremo il motivo.
+
+
+	Usando questa interpretazione combinata posso sintetizzare la funzione stato prossimo:
+
+		T : funzione transizione
+		Qnext : Q stato prossimo
+		Q : Q stato corrente
+
+		Qnext = T(s, r, Q)
+
+
+	Il termine "arancione" è una copia del mintermine(SFQ) permette di fare semplificazione sotto.
+	[Ricordo: la proprietà che ci permette questo a === a + a]
+
+
+Uitlizzo logica sequenziale
+	
+	1. Conservare risultato di elaborazioni - memorizzare qualcosa
+	2. Affrontare il problema del cammino critico in circuiti combinatori molto complessi
+
+Come si effettua la sincronizzazione?
+	Intervallando tra i circuiti combinatori, un circuito sequenziale che memorizza lo stato di 
+	uscita del circuto combinatorio precedente dandolo in pasto al circuito combinatorio prossimo.
+
+
+Tempo discreto
+
+	Significato - Cosa vuole dire
+
+	Tempo continuo... t € R, per gli elaboratori è antipatico il tempo reale... con i reali non si 
+	possono numerare ma non si riesce a stabilire un ordine
+
+	Agli elaboratori piace contare t € N^+ = {1, 2, 3, 4, ...}
+
+	Per tempo discreto, intendiamo la presenza di step o passi
+
+	All'istante 1 - avremo	tempo=1
+	All'istante 2 - 	  	tempo=2
+	...
+	All'istante x - 		tempo=x
+
+
+Per sincronizzare:
+	Serve un orologio, attraverso un segnale di clock, i vari circuiti riescono a sincronizzarsi e 
+	coordinarsi tra loro.
+
+	Gli step vengono chiamati cicli, cicli di clock.
+
+	Il clock è un segnale in grado di aprirre e chiudere i cancelli.
+
+Cosa fa questo segnale?
+	Al ciclo 1: apre la porta a sx e contenporaneamente chiude la porta a dx, all'istante dopo aprirà
+
+
+Il segnale di clock p un bit che varia nel tempo, secondo un'onda quadra, una curva periodica, ...
+le linee tratteggiate indicano i cicli, i cambi di voltaggio sono così perpendicolari per indicare 
+che il cambio di stato è istantaneo.
+
+Il clcok si misura in Hz
+
+	f(Hz) = 1/T(s)
+
+Clock grandi quando T è piccola
+Clock piccoli quando T è grande
+
+Un clock molto lento avrà una durata temporale molto alta e una frequenza molto bassa
+Al contraio, un clock molto veloce(durata temporale bassa) va ad alte frequenze
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
