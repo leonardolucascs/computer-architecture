@@ -1,0 +1,94 @@
+ALU: Arithmetic Logic Unit
+
+In una CPU, la ALU(Unità aritmetico-logica) è il componente fondamentale hardware in cui vengono svolte le operazioni di calcolo, aritmetiche-logiche.
+Esempi di operazioni di tipo aritmetico: somma, prodotto, differenza, ...
+	   di op. di tipo logico: and, or, ...
+
+L'esecuzione di un istruzione all'interno di una cpu si svolge su 5 fasi
+- fase fetch
+- fase decode
+- fase execute
+- fase memory
+- fase write-back
+
+La alu è responsabile della fase di execute, in cui vengono appunto svolte le operazioni aritmetico-logiche.
+
+A livello astratto la ALU è un circuito combinatoio multifunzionale, [finora i circuiti combinatori visti erano monofunzionali, ad esempio il sommatore svolge una sola operazione] definito così:
+	- INPUT: gli operandi e un codice di selezione, chiamato ALUop che identifica la funzione f (operazione richiesta alla ALU, ovvero viene richiesta quale operazione agisce sugli operandi)
+	- OUTPUT: il risultato dell'applicazione di f agli operandi
+
+
+Logica di progettazione:
+	- Modulare: approccio modulare, partendo da ALU semplici, ad esempio su 1 bit, progettiamo ALU complesse. Una ALU a n bit(per operandi e risultato) si progetta componendo ALU da 1 bit(moduli)
+
+	- Parallela: dati gli operandi, la ALU calcola internamente tutte le funzioni di cui è capace, la selezione (multiplexer) ne porrà in uscita una sola tramite ALUop
+
+
+ALU
+	- componente centrale nell'Architettura Von Neumann, responsabile fase di execute
+	- ogni operazione supportata è eseguita in hardware da un sotto-circuito combinatorio dedicato
+	- Le CPU moderne possono contenere diverse ALU per svolgere più operazioni in parallelo, sono estremamente complesse. 
+
+	In questo corso considereremo la CPU del MIPS32, e la sua ALU, una versione base, in particolare progetteremo 6 operazioni tra due operandi a e b:
+	 - somma
+	 - sottrazione
+
+	 - AND
+	 - OR
+	 - Comparazione
+	 - Test di uguaglianza allo zero
+
+
+
+PROGETTAZIONE
+
+ALU A 1 BIT: AND - OR
+	ALU lavora con operandi a 1 bit, in grado di svolgere le operazioni logiche AND e OR tra due operandi.
+	Entrano due bit, a_i e b_i, vengono esguiti and e or in parallelo e poi con un segnale di selezione si pilota il multiplexer per decidere quale output mandare fuori.
+
+	Il mux è a due vie, entrano due linee dati e viene pilotato da 1 bit ALUop.
+	Y_i dipende dal valore di ALUop.
+
+
+ESTENSIONE: SUPPORTO DELLA SOMMA
+	L'ALU appena realizzata la estendiamo per poter eseguire la somma, sempre a 1 bit.
+
+	Implementiamo la somma attraverso un Full-Adder.
+
+	L'ALU guadagna un input in più, dovuto al fatto che il sommatore(FA) ha bisogno di un ingresso di riporto r_in e produce un nuovo output, r_out di scarto.
+
+	Ora dentro il componente si calcolano tre funzioni =>  il selettore ha in ingresso 3 linee => la selezione ha bisogno di almeno 2 bit, il mux passa da 1 bit a 2 bit, deve scegliere 1 su 3.
+
+
+** Utilizzando questi moduli a 1 bit possiamo costruire una ALU a n bit che supporta le funzioni appena viste
+Come?
+	Utilizzando lo schema della propagazione dei riporti collego 32 ALU da 1 bit
+Perché?
+	Le operazioni di AND e OR sono indipendenti(bit a bit) ma la somma ha bisogno della propagazione dei riporti per ottenere il risultato corretto.
+	
+	Le ALU sono collegate in serie, a ciascuno ALu viene propagata una copia di ALUop.
+	I riporti sono collegati in serie, gli r_out finiscono in ingresso a gli r_in dei moduli successivi, eccezion fatta per gli estremi, il primo settato a 0 e l'ultimo scartato.
+
+	Ciascuna ALU lavora su una posizione, Alu1 su a_0 b_0, Alu2 su a_1 b_1 e così via.
+
+	Tutte le ALU lavorano in parallelo, ma i collegamenti di ALUop e riporto sono in serie.
+
+ESTENSIONE: SUPPORTO DELLA SOTTRAZIONE
+	Per il supporto della sottrazione(particolare tipo di somma), basta intervenire sul FA giò presente dedicato.
+
+	Abbiamo già visto la sua implementazione su un FA.
+		- Aggiunta 1 bit di controllo: Inverti-b_i (per complementare b)
+			Tramite uno XOR, su b_i, a seconda del settaggio del segnale di controllo avrò b_i o il suo complemento a 1.
+		- Settaggio r_in del sommatore
+			Settato r_in = 1, ottengo così sul sommatore l'operazione 1 + a + not_b => in Ca2 è la sottrazione tra i due operandi
+
+	A livello circuitale:
+		Il segnale Inverti-b si propaga
+			- su una linea di ingresso dello XOR, di conseguenza lo stesso lo si propaga su tutte le altre ALU
+			- sul sommatore al primo riporto r_in; r_in = Inverti-b
+
+		Ottengo che
+			=> quando Inverti-b = 0, effettua la somma
+			   quando Inverti-b = 1, fai la sottrazione
+
+	Questa nuova ALU per specificare che operazione voglio fare passa da 2 bit di controllo a 3 bit, oltre alla colonna di ALUop bisogna specificare una colonna per Inverti-b.
