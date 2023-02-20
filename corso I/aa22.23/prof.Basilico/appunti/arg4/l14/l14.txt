@@ -1,0 +1,38 @@
+COMPARAZIONE
+
+La comparazione, ossia il confronto di uguaglianza tra a e b, è la successiva operazione che la ALU deve essere in grado di fare.
+
+Fare la comparazione tra due numeri, vuol dire stabilire se
+ - a > b
+ - a < b
+ - a = b
+
+Per un elaboratore il procedimento più semplice per stabilire questo è attraverso la sottrazione.
+
+Un risultato = 0, determinerà che a e b sono uguali; per segno negativo dell'operazione avrò a < b, viceversa segno positivo per a > b.
+
+Nella struttura finale della ALU, aggiungeremo un output aggiuntivo di 1 bit, un flag, denominato "bit di zero", che vale 1 ogni qualvolta il risultato calcolato, per ogni tipo di operazione, dalla ALU è nullo(n zeri).
+
+Nel caso di una ALU a 32 bit, se tutti questi 32 bit saranno posti a 0, la ALU manderà in uscita il bit di zero pari a 1.
+
+Come avviene la comparazione nell'ALU?
+	Nella architettura MIPS, la comparazione prende il nome di SLT(Set-Less-Than):
+		Significa porre a 1 qualcosa se un certo valore è (strettamente)minore di(Set Less Than) un altro.
+
+	Questa è la definizione della funzione che vogliamo implementare.
+
+Internamente come si implementa?
+Algoritmo:
+	1. calcoliamo a-b
+	2. Se il risultato è < 0, allora in uscita avrò 0000...1(n-1 bit a 0, l'ultimo a 1 per ALU a n bit)
+	3. Altrimenti avrò in uscita 0000...0
+
+Modalità:
+	Per verificare il segno della differenza basta controllare l'uscita del Full-adder nella posizione n-1, appartenente all'ultima ALU, ossia l'uscita del MSB, bit più significativo.
+
+	Nel Ca2 sappiamo che il MSB indica il bit di segno.
+
+
+
+
+
