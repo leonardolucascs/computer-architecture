@@ -1,4 +1,4 @@
-COMPARAZIONE
+“COMPARAZIONE
 
 La comparazione, ossia il confronto di uguaglianza tra a e b, è la successiva operazione che la ALU deve essere in grado di fare.
 
@@ -24,15 +24,67 @@ Come avviene la comparazione nell'ALU?
 Internamente come si implementa?
 Algoritmo:
 	1. calcoliamo a-b
-	2. Se il risultato è < 0, allora in uscita avrò 0000...1(n-1 bit a 0, l'ultimo a 1 per ALU a n bit)
-	3. Altrimenti avrò in uscita 0000...0
+	2. Se il risultato è < 0, allora in uscita avrò 0000...1(n-1 bit a 0, l'ultimo(LSB) a 1 per ALU a n bit)
+	3. Altrimenti, nel caso >=, avrò in uscita 0000...0
 
 Modalità:
 	Per verificare il segno della differenza basta controllare l'uscita del Full-adder nella posizione n-1, appartenente all'ultima ALU, ossia l'uscita del MSB, bit più significativo.
-
 	Nel Ca2 sappiamo che il MSB indica il bit di segno.
 
+	I bit dalla posizione 1 a n-1(gli n-1 bit più alti) dell'uscita li setto sempre a 0.
+
+Procedimento:
+	1. setto le uscite da y_1 : y_n_1 tutte a 0
+	2. calcolo a-b
+	3. setto l'uscita y_0 a S_n_1(bit di somma in posizione n-1), mi copia il risultato dell'ultima somma nel prima uscta
+
+
+Dal punto di vista circuitale
+	
+	Partendo dal modulo costruito precedentemente, lo espando, aggiungendo un nuovo input Less_i, dove i si riferisce alla posizione del bit su cui lavora quella ALU.
+
+	Viene associato questo nome perché questo input sarà dedicato alla SLT, e lo mando in ingresso al mux sulla quarta linea non usata finora, quando il selettore ALUop vale 11.
+	Questo Less diventerà il bit di uscita ogni qual volta che vorrò fare la SLT(comparazione).
+
+	Dunque per fare la comparazione:
+	- setto Less1 : Lessn_1 a 0
+	- setto Inverti-b a 1, per fare a-b
+	- setto Less0 = Sn_1(il bit di segno di a-b)
+	- setto ALUop a 11
+
+	Dunque in uscita da y0 : y_n-1 avrò il valore per l'operazione SLT.
+
+
+OVERFLOW
+Com'è possibile riconoscere l'overflow nella ALU appena definita, per possibili casi di presenza?
+
+Per riconoscere l'overflow in Ca2 abbiamo due modi:
+	- gli ultimi due riporti sono diversi
+	- sommando 2 numeri positivi ottengo un negativo oppure sommando 2 negativi ottengo un positivo.
+
+Adottando il secondo metodo attraverso un semplice circuito combinatorio riesco a riconoscere l'overflow.
+Il cicrucito combinatorio prenderà in input i bit di segno di a,b e del risultato della somma s, tutti questi bit stanno nella ALU n_1.
+
+Attenzione: che il segno di b effettivo(b^) non è b_n-1 ma bensì [b_n-1 XOR Inverti-b], è a valle dello XOR pilotato dal segnale Inverti-b.
+
+STRUTTURA FINALE
+
+	L'implementazione interna dei singoli moduli, l'abbiamo vista quindi la oscuriamo, e otteniamo la struttura finale della ALU a 32 bit.
+
+	È stato aggiunto un ultimo componente per indicare il bit di zero, attraverso un NOR su tutti i bit dell'uscita y_0:y_n-1.
+	Dunque il bit di zero varrà 1, se e soltanto se tutti i bit saranno pari a 0, per costruzione del NOR.
+
+	Graficamente la ALU viene identificata da questo trapezio(con sopra un triangolo), e la tabella sotto rappresenta il manuale di istruzioni.
+
+	ALUop viene specificato su 3bit, internamente quel comando è interpreto come un ALUop su 2 bit, e Inverti-b su 1 bit, siccome ALUop identifica un termine generale sulle operazioni della ALU decido di accorpare Inverti-b su ALUop, da ricordare che di quei 3 bit quello più a sinistra andrà ad indicare Inverti-b.
+
+
+CONTESTO CPU
+Nel contesto della CPU, la ALU è il componente fondamentale per l'elaborazione dei dati, ma chi la controlla è un altro compenente di livello superiore chiamato Unit Control(UC).
 
 
 
+VARIANTI ALU
+Le ALU moderne sono molto più complesse di queste ma il principio di progettazione è quello appena visto.
 
+Ad esempio: digressione su un ALU in grado di operare su floating-points.
