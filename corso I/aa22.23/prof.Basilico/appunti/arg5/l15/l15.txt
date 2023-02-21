@@ -1,0 +1,89 @@
+CAPITOLO: Funzioni Logiche e Logica Combinatoria
+
+PLA (Programmable Logic Arrays)
+
+Sono dispostivi logici programmabili, utilizzato per l'implementazione hardware dei circuiti combinatori.
+
+Rappresenta un metodo automatizzato, per sintetizzare una funzione logica in un circuito hardware, possiamo pensarlo come un circuito grezzo, per il quale tramite programmazione hardware forgiamo la funzione logica desiderata.
+
+Cosa fa la PLA:
+	Sfrutta la generalità della prima forma canonica, difatto ricalca i principi di sintesi dei circuiti combinatori in prima forma canonica basati su due stadi: stadio AND e stadio OR (somma di prodotti)
+
+Come si presenta:
+	Gli stadi vengono identificati come array
+
+	Una PLA è composta da due array: AND e OR
+
+Funzionamento:
+	L'input di n bit entra nell'array AND, in cui vengono calcolati alcuni implicanti a seconda della programmazione decisa.
+	Quanti implicanti la PLA può calcolare viene determinato in fase di progettazione-costruzione della PLA.
+	Il numero di implicanti calcolati nello stadio AND al più potrà essere pari a 2^n, dove n è il numero di input.
+
+	Dunque l'array AND viene programmato per calcolare un numero di implicanti N.
+
+	L'array OR consente di combinare tutti gli implicanti in un grande OR, ma è interessante capire che è in grado sommare gruppi di implicanti su al più K uscite, quindi possiamo codificare al più K funzioni logiche, al posto che una singola funzione logica.
+
+	n, N, K sono parametri dimensionali del PLA, decisi in fase di progettazione del dispositivo.
+
+Programmazione:
+	Array AND: parte arancione con 3 input e 8 possibili implicanti
+	Array OR: parte blu, in grado di calcolare 5 uscite
+
+	In questo schema abbiamo n:3; N:8 ; K:5
+
+	Gli input entrano e vengono duplicati, nella versione naturale e negata, in ogni stadio and e or  entra un solo filo, questa connessione è una notazione compatta sugli ingressi, per facilitare la lettura dello schema.
+
+	La notazione compatta sugli ingressi viene adottata sia per lo stadio AND che per lo stadio OR, gli input possono essere variabili naturali o negate
+
+	La programmazione avviene bruciando alcuni collegamenti e lasciandone altri collegati(di solito viene specificato tramite una matrice di collegamenti).
+
+	Questa interpretazione è solo una visualizzazione del procedimento, non bisogna confondere l'ingresso bruciato come uno 0 in ingresso.
+
+	Le tecnologie che permettono questo procedimento sono alcune, tra cui l'utilizzo di fusibili.
+
+	Un fusibile è un componente elettrico in grado di proteggere un circuito dalle sovraccorrenti, se usiamo uno su ogni collegamendo, applicando una tensione abbastanza alta brucio e il fusibile e quindi blocco il collegamento.
+	Esiste anche la sua duale tecnologica, l'antifusibile, ossia il collegamento si attiva applicando una tensione molto alta.
+
+ESEMPIO
+
+	A sinistra tabella verità di 5 funzioni logiche, incolonno le diverse uscite, ogni uscita è come se fosse diversa degli stessi input condivisi, questa è una rappresentazione compatta ed è la specifica.
+
+	Sullo schema della PLA(destra) vado a stamparci la matrice dei collegamenti che implementa i mintermini.
+
+	Array AND
+	m1: y1 e y2 condividono questo mintermine, bisogna essere calcolato quel mintermine, quindi brucio sulla linea del mintermine m1 i tre collegamenti che corrispondono alla versione naturale del segnale di ingresso e lascio colleggate le linee del valore negato delle variabiali.
+
+	m3: nessuna funziona sta usando il mintermine dunque è inutile calcolarlo, è una linea inutilizzata, un inefficenza che si paga in modo di avere un modello standard.
+
+	Array OR
+	Per ogni singola funzione logica in colonna vado a bruciare i mintermini non utili e combino gli altri, questo per ogni singolo or.
+
+	Dunque con questo procedimento bruciando i collegamenti è possibile implementare qualsiasi funzione logica.
+	Attenzione: in realtà è possibile generare qualsiasi funzione logica soltanto nel caso in cui il numero di mintermini generabili internamnete(N) è uguale a 2^n.
+	Se questo numero N è minore di 2^n non è detto che si possa rappresentare la funzione logica a priori, per arginare questo problema devo magari semplificare la funzione per permetterne il suo utilizzo con un certo numero di implicanti stando dentro ad un numero minore o uguale di implicanti che la PLA può generare.
+
+	Perché si dovrebbero progettare PLA con un numero minore di 2^n mintermini generabili internamente?
+	N cresce esponenzialmente con il numero di input, all'aumentare di input la PLA cresce
+	Il numero di porte and interne ha una dipenda esponenziale rispetto al numero di variabile della PLA, dunque per limitare la dimensione e complessità della PLA fissiamo N < 2^n.
+
+
+ROM(Read-Only Memory)
+Alternativa alla PLA, per implementare funzioni logiche, stessa logica della PLA ma con un circutito logico diverso.
+
+Funzionamento:
+	L'array AND, non è programmabile, si dice che è HARDWIRED, è forzato sempre a generare tutti i 2^n mintermini possibili.
+	Questo è possibile attraverso un decoder.
+
+	La programmazione avviene solo nell'array OR.
+	
+	In questo caso non si vanno a bruciare i collegamenti, ma si collegano i mintermini opportuni per ciascuna funzione logica.
+
+	Questo schema rappresenta una memoria, l'input in ingresso è visto come un indirizzo di una cella di memoria, mentre y1:yn sono visti come i bit memorizzati a quell'indirizzo di memoria.
+
+	In questo caso nessuna configurazione salta.
+
+	A differenza della PLA sono anche riporgrammabili, nel caso delle EEPROM(Flash drivers) che sono riscrivibili, la parte legata all'uscite è possibile riprogrammarla un certo numero di volte.
+
+	Lo svantaggio delle ROM è la mancanza di semplificazione, dunque la crescita esponenziale della loro dimensione con n.
+
+
