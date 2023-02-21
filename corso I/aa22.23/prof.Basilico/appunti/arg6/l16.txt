@@ -10,9 +10,7 @@ Il nome che hanno è dato dallo stato in cui esso si trova, 1 pari all'uscita e
 Com'è fatto internamente? 
 	Le uscite dei NOR tornano indietro di uno stadio e si presentano come input al NOR opposto.
 
-
-Funzionamento
-
+Funzionamento:
 Stati  	S 	R
 		0 	0 	-> non succede nulla
 				... Pongo a 1 il segnale di Set
@@ -53,8 +51,6 @@ Il segnale dipende da una race condition fuori dal nostro controllo.
 
 Sul manuale di configurazione del nostro bistabile, specificheremo che la configurazione 1=1 non è 
 permessa o non si fa.
-
-
 
 
 
@@ -149,20 +145,3 @@ Clock piccoli quando T è grande
 
 Un clock molto lento avrà una durata temporale molto alta e una frequenza molto bassa
 Al contraio, un clock molto veloce(durata temporale bassa) va ad alte frequenze
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -85,5 +85,3 @@ Funzionamento:
 	A differenza della PLA sono anche riporgrammabili, nel caso delle EEPROM(Flash drivers) che sono riscrivibili, la parte legata all'uscite è possibile riprogrammarla un certo numero di volte.
 
 	Lo svantaggio delle ROM è la mancanza di semplificazione, dunque la crescita esponenziale della loro dimensione con n.
-
-
